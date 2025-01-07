@@ -2,11 +2,14 @@
   "name": "snaptik-app-api",
   "version": "1.0.0",
   "description": "TikTok video downloader using SnapTik",
-  "main": "src/index.js",
+  "main": "src/api.js",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "start": "bun run src/api.js",
-    "dev": "bun --hot run src/api.js"
+    "start": "node src/api.js",
+    "dev": "node src/api.js"
   },
   "dependencies": {
     "axios": "^1.6.7",
@@ -14,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.21.2",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "helmet": "^7.1.0"
   }
 }
