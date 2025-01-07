@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TikTok Transcriber</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0052a3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: white;
+        }
+        .cached {
+            color: #0066cc;
+            font-style: italic;
+        }
+        .error {
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>TikTok Transcriber</h1>
+    <div class="form-group">
+        <label for="tiktokUrl">TikTok URL:</label>
+        <input type="text" id="tiktokUrl" placeholder="https://www.tiktok.com/@username/video/...">
+    </div>
+    <button onclick="transcribe()" id="transcribeBtn">Transcribe</button>
+    <div id="result"></div>
+
+    <script>
+        async function transcribe() {
+            const resultDiv = document.getElementById('result');
+            const transcribeBtn = document.getElementById('transcribeBtn');
+            const url = document.getElementById('tiktokUrl').value;
+            
+            if (!url) {
+                resultDiv.innerHTML = '<span class="error">Please enter a TikTok URL</span>';
+                return;
+            }
+
+            transcribeBtn.disabled = true;
+            resultDiv.innerHTML = 'Processing TikTok URL... (this may take a minute)';
+            
+            try {
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const cacheStatus = data.cached ? 
+                        '<p class="cached">(Retrieved from cache)</p>' : '';
+                    resultDiv.innerHTML = `
+                        <h3>Transcription:</h3>
+                        ${cacheStatus}
+                        <p>${data.transcription}</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            } finally {
+                transcribeBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html> 

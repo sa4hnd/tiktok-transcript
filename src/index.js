@@ -1,6 +1,6 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const FormData = require('form-data');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import FormData from 'form-data';
 
 class Resource {
   constructor(url, index) {
@@ -184,4 +184,4 @@ class SnapTikClient {
   }
 }
 
-module.exports = SnapTikClient;
+export default SnapTikClient;
